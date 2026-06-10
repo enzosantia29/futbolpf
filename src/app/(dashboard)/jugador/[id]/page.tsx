@@ -134,12 +134,18 @@ export default async function JugadorPage({ params }: { params: Promise<{ id: st
             #{jugador.numero ?? '—'} · {LABEL_POSICION[jugador.posicion as Posicion]}
           </p>
         </div>
-        <span className={`text-xs px-2 py-1 rounded-full font-medium ${
-          jugador.estado === 'activo' ? 'bg-green-100 text-green-700' :
-          jugador.estado === 'lesionado' ? 'bg-red-100 text-red-700' :
-          jugador.estado === 'suspendido' ? 'bg-yellow-100 text-yellow-700' :
-          'bg-gray-100 text-gray-500'
-        }`}>{jugador.estado}</span>
+        <div className="flex items-center gap-2">
+          <Link href={`/jugador/${id}/editar`}
+            className="text-xs bg-gray-100 hover:bg-gray-200 text-gray-600 px-3 py-1.5 rounded-xl font-medium transition-colors">
+            Editar
+          </Link>
+          <span className={`text-xs px-2 py-1 rounded-full font-medium ${
+            jugador.estado === 'activo' ? 'bg-green-100 text-green-700' :
+            jugador.estado === 'lesionado' ? 'bg-red-100 text-red-700' :
+            jugador.estado === 'suspendido' ? 'bg-yellow-100 text-yellow-700' :
+            'bg-gray-100 text-gray-500'
+          }`}>{jugador.estado}</span>
+        </div>
       </div>
 
       {/* Panel de lesión */}

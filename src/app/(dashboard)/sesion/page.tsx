@@ -95,9 +95,10 @@ export default async function SesionesPage() {
                   const res = porSesion[s.id]
                   const esPartido = s.tipo === 'partido'
                   return (
-                    <div
+                    <Link
                       key={s.id}
-                      className={`bg-white border rounded-xl px-4 py-3 shadow-sm ${esPartido ? 'border-blue-200' : 'border-gray-200'}`}
+                      href={`/sesion/${s.id}`}
+                      className={`block bg-white border rounded-xl px-4 py-3 shadow-sm active:opacity-70 ${esPartido ? 'border-blue-200' : 'border-gray-200'}`}
                     >
                       <div className="flex items-start justify-between gap-2">
                         <div className="flex items-start gap-3 min-w-0">
@@ -154,7 +155,7 @@ export default async function SesionesPage() {
                           </span>
                         </div>
                       )}
-                    </div>
+                    </Link>
                   )
                 })}
               </div>
