@@ -1,7 +1,11 @@
 import { createClient } from '@/lib/supabase/server'
 import { getEquipoActivo } from '@/lib/equipo'
 import { NextRequest, NextResponse } from 'next/server'
-import { renderToBuffer, Document, Page, View, Text, StyleSheet } from '@react-pdf/renderer'
+import { renderToBuffer, Document, Page, View, Text, StyleSheet, Font } from '@react-pdf/renderer'
+import path from 'path'
+
+Font.register({ family: 'Roboto',     src: path.join(process.cwd(), 'public/fonts/Roboto-Regular.woff') })
+Font.register({ family: 'Roboto-Bold', src: path.join(process.cwd(), 'public/fonts/Roboto-Bold.woff') })
 
 // ── Estilos ──────────────────────────────────────────────────────────────────
 
@@ -12,21 +16,21 @@ const BORDE  = '#e5e7eb'
 const NEGRO  = '#111827'
 
 const styles = StyleSheet.create({
-  page: { fontFamily: 'Helvetica', fontSize: 8, padding: 28, backgroundColor: '#ffffff', color: NEGRO },
+  page: { fontFamily: 'Roboto', fontSize: 8, padding: 28, backgroundColor: '#ffffff', color: NEGRO },
 
   // Header
   header:      { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 },
   clubBadge:   { backgroundColor: VERDE, borderRadius: 6, paddingHorizontal: 10, paddingVertical: 6 },
-  clubNombre:  { color: '#ffffff', fontSize: 13, fontFamily: 'Helvetica-Bold' },
+  clubNombre:  { color: '#ffffff', fontSize: 13, fontFamily: 'Roboto-Bold' },
   headerRight: { alignItems: 'flex-end' },
-  titulo:      { fontSize: 11, fontFamily: 'Helvetica-Bold', color: NEGRO },
+  titulo:      { fontSize: 11, fontFamily: 'Roboto-Bold', color: NEGRO },
   subtitulo:   { fontSize: 7.5, color: GRIS, marginTop: 2 },
-  periodo:     { fontSize: 7, color: VERDE, fontFamily: 'Helvetica-Bold', marginTop: 3 },
+  periodo:     { fontSize: 7, color: VERDE, fontFamily: 'Roboto-Bold', marginTop: 3 },
 
   divider: { borderBottomWidth: 1, borderBottomColor: BORDE, marginBottom: 12 },
 
   // Tabla asistencia
-  tablaTitulo:  { fontSize: 8.5, fontFamily: 'Helvetica-Bold', color: NEGRO, marginBottom: 5 },
+  tablaTitulo:  { fontSize: 8.5, fontFamily: 'Roboto-Bold', color: NEGRO, marginBottom: 5 },
   tablaRow:     { flexDirection: 'row', borderBottomWidth: 0.5, borderBottomColor: BORDE, minHeight: 16, alignItems: 'center' },
   tablaRowPar:  { backgroundColor: GRIS_L },
   tablaHeaderRow: { flexDirection: 'row', backgroundColor: VERDE, minHeight: 18, alignItems: 'center', borderRadius: 3, marginBottom: 1 },
@@ -37,19 +41,19 @@ const styles = StyleSheet.create({
   celdaTotal:    { width: 40,  paddingHorizontal: 4, textAlign: 'center', paddingVertical: 3 },
   celdaPct:      { width: 42,  paddingHorizontal: 4, textAlign: 'center', paddingVertical: 3 },
 
-  headerText:  { color: '#ffffff', fontFamily: 'Helvetica-Bold', fontSize: 7 },
-  presente:    { color: VERDE, fontFamily: 'Helvetica-Bold' },
+  headerText:  { color: '#ffffff', fontFamily: 'Roboto-Bold', fontSize: 7 },
+  presente:    { color: VERDE, fontFamily: 'Roboto-Bold' },
   ausente:     { color: '#dc2626' },
   sinDato:     { color: '#9ca3af' },
 
   // Tabla carga
   celdaCarga:  { width: 38, paddingHorizontal: 3, textAlign: 'center', paddingVertical: 3 },
-  celdaTotal2: { width: 46, paddingHorizontal: 4, textAlign: 'center', paddingVertical: 3, fontFamily: 'Helvetica-Bold' },
+  celdaTotal2: { width: 46, paddingHorizontal: 4, textAlign: 'center', paddingVertical: 3, fontFamily: 'Roboto-Bold' },
 
   // Footer
   footer:     { position: 'absolute', bottom: 18, left: 28, right: 28, flexDirection: 'row', justifyContent: 'space-between', borderTopWidth: 0.5, borderTopColor: BORDE, paddingTop: 5 },
   footerText: { fontSize: 6.5, color: GRIS },
-  footerBold: { fontSize: 6.5, color: GRIS, fontFamily: 'Helvetica-Bold' },
+  footerBold: { fontSize: 6.5, color: GRIS, fontFamily: 'Roboto-Bold' },
 
   pageNum:    { position: 'absolute', bottom: 18, right: 28, fontSize: 6.5, color: GRIS },
 
@@ -57,8 +61,8 @@ const styles = StyleSheet.create({
   resumenGrid:   { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginBottom: 14 },
   resumenCard:   { width: 76, backgroundColor: GRIS_L, borderRadius: 5, padding: 6, borderLeftWidth: 2, borderLeftColor: VERDE },
   resumenCardP:  { width: 76, backgroundColor: '#eff6ff', borderRadius: 5, padding: 6, borderLeftWidth: 2, borderLeftColor: '#3b82f6' },
-  resumenTipo:   { fontSize: 6, color: GRIS, fontFamily: 'Helvetica-Bold', textTransform: 'uppercase', marginBottom: 2 },
-  resumenFecha:  { fontSize: 7.5, fontFamily: 'Helvetica-Bold', color: NEGRO },
+  resumenTipo:   { fontSize: 6, color: GRIS, fontFamily: 'Roboto-Bold', textTransform: 'uppercase', marginBottom: 2 },
+  resumenFecha:  { fontSize: 7.5, fontFamily: 'Roboto-Bold', color: NEGRO },
   resumenCarga:  { fontSize: 6.5, color: GRIS, marginTop: 2 },
 })
 
@@ -172,7 +176,7 @@ export async function GET(req: NextRequest) {
             {chunk.map(s => (
               <View key={s.id} style={styles.celdaSesion}>
                 <Text style={[styles.headerText, { fontSize: 6 }]}>
-                  {s.tipo === 'partido' ? '⚽' : '🏃'} {fmtFecha(s.fecha, { day: 'numeric', month: 'short' })}
+                  {s.tipo === 'partido' ? 'PAR' : 'ENT'} {fmtFecha(s.fecha, { day: 'numeric', month: 'short' })}
                 </Text>
               </View>
             ))}
@@ -201,10 +205,10 @@ export async function GET(req: NextRequest) {
                     </View>
                   )
                 })}
-                <View style={styles.celdaTotal}><Text style={{ fontFamily: 'Helvetica-Bold' }}>{presentes}</Text></View>
+                <View style={styles.celdaTotal}><Text style={{ fontFamily: 'Roboto-Bold' }}>{presentes}</Text></View>
                 <View style={styles.celdaTotal}><Text style={styles.ausente}>{ausentes}</Text></View>
                 <View style={styles.celdaPct}>
-                  <Text style={{ fontFamily: 'Helvetica-Bold', color: VERDE }}>
+                  <Text style={{ fontFamily: 'Roboto-Bold', color: VERDE }}>
                     {presentes + ausentes > 0 ? `${Math.round((presentes / (presentes + ausentes)) * 100)}%` : '—'}
                   </Text>
                 </View>
@@ -239,7 +243,7 @@ export async function GET(req: NextRequest) {
             {chunk.map(s => (
               <View key={s.id} style={styles.celdaCarga}>
                 <Text style={[styles.headerText, { fontSize: 6 }]}>
-                  {s.tipo === 'partido' ? '⚽' : '🏃'} {fmtFecha(s.fecha, { day: 'numeric', month: 'short' })}
+                  {s.tipo === 'partido' ? 'PAR' : 'ENT'} {fmtFecha(s.fecha, { day: 'numeric', month: 'short' })}
                 </Text>
               </View>
             ))}
@@ -259,7 +263,7 @@ export async function GET(req: NextRequest) {
                   total += reg.carga; count++
                   return <View key={s.id} style={styles.celdaCarga}><Text style={{ color: NEGRO }}>{Math.round(reg.carga)}</Text></View>
                 })}
-                <View style={styles.celdaTotal2}><Text style={{ color: VERDE, fontFamily: 'Helvetica-Bold' }}>{Math.round(total)}</Text></View>
+                <View style={styles.celdaTotal2}><Text style={{ color: VERDE, fontFamily: 'Roboto-Bold' }}>{Math.round(total)}</Text></View>
                 <View style={styles.celdaTotal2}><Text style={{ color: GRIS }}>{count > 0 ? Math.round(total / count) : '—'}</Text></View>
               </View>
             )
@@ -292,7 +296,7 @@ export async function GET(req: NextRequest) {
             const esPartido = s.tipo === 'partido'
             return (
               <View key={s.id} style={esPartido ? styles.resumenCardP : styles.resumenCard}>
-                <Text style={styles.resumenTipo}>{esPartido ? '⚽ Partido' : '🏃 Entrenamiento'}</Text>
+                <Text style={styles.resumenTipo}>{esPartido ? 'Partido' : 'Entrenamiento'}</Text>
                 <Text style={styles.resumenFecha}>
                   {fmtFecha(s.fecha, { weekday: 'short', day: 'numeric', month: 'short' })}
                 </Text>

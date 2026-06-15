@@ -1,8 +1,12 @@
 import { createClient } from '@/lib/supabase/server'
 import { getEquipoActivo } from '@/lib/equipo'
 import { NextRequest, NextResponse } from 'next/server'
-import { renderToBuffer, Document, Page, View, Text, StyleSheet } from '@react-pdf/renderer'
+import { renderToBuffer, Document, Page, View, Text, StyleSheet, Font } from '@react-pdf/renderer'
+import path from 'path'
 import { calcularRatioAC } from '@/utils/carga'
+
+Font.register({ family: 'Roboto',     src: path.join(process.cwd(), 'public/fonts/Roboto-Regular.woff') })
+Font.register({ family: 'Roboto-Bold', src: path.join(process.cwd(), 'public/fonts/Roboto-Bold.woff') })
 
 // ── Estilos ──────────────────────────────────────────────────────────────────
 
@@ -32,15 +36,15 @@ const ZONA_LABEL: Record<string, string> = {
 }
 
 const s = StyleSheet.create({
-  page: { fontFamily: 'Helvetica', fontSize: 8.5, padding: 28, backgroundColor: '#ffffff', color: NEGRO },
+  page: { fontFamily: 'Roboto', fontSize: 8.5, padding: 28, backgroundColor: '#ffffff', color: NEGRO },
 
   header:      { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 14 },
   clubBadge:   { backgroundColor: VERDE, borderRadius: 6, paddingHorizontal: 10, paddingVertical: 6 },
-  clubNombre:  { color: '#ffffff', fontSize: 13, fontFamily: 'Helvetica-Bold' },
+  clubNombre:  { color: '#ffffff', fontSize: 13, fontFamily: 'Roboto-Bold' },
   headerRight: { alignItems: 'flex-end' },
-  titulo:      { fontSize: 12, fontFamily: 'Helvetica-Bold', color: NEGRO },
+  titulo:      { fontSize: 12, fontFamily: 'Roboto-Bold', color: NEGRO },
   subtitulo:   { fontSize: 7.5, color: GRIS, marginTop: 2 },
-  fechaGen:    { fontSize: 7, color: VERDE, fontFamily: 'Helvetica-Bold', marginTop: 3 },
+  fechaGen:    { fontSize: 7, color: VERDE, fontFamily: 'Roboto-Bold', marginTop: 3 },
 
   divider: { borderBottomWidth: 1, borderBottomColor: BORDE, marginBottom: 12 },
 
@@ -58,31 +62,31 @@ const s = StyleSheet.create({
   cRatio:   { width: 55,  paddingHorizontal: 6, textAlign: 'center' },
   cZona:    { flex: 1,    paddingHorizontal: 7 },
 
-  hText:    { color: '#ffffff', fontFamily: 'Helvetica-Bold', fontSize: 7.5 },
+  hText:    { color: '#ffffff', fontFamily: 'Roboto-Bold', fontSize: 7.5 },
 
   // Zona badge
   zonaBadge: { borderRadius: 4, paddingHorizontal: 6, paddingVertical: 2, alignSelf: 'flex-start' },
-  zonaText:  { fontSize: 7, fontFamily: 'Helvetica-Bold' },
+  zonaText:  { fontSize: 7, fontFamily: 'Roboto-Bold' },
 
   // Leyenda
   leyendaBox:   { marginTop: 18, borderWidth: 0.5, borderColor: BORDE, borderRadius: 6, padding: 10 },
-  leyendaTitulo:{ fontSize: 8, fontFamily: 'Helvetica-Bold', color: NEGRO, marginBottom: 8 },
+  leyendaTitulo:{ fontSize: 8, fontFamily: 'Roboto-Bold', color: NEGRO, marginBottom: 8 },
   leyendaGrid:  { flexDirection: 'row', gap: 8 },
   leyendaItem:  { flex: 1, borderRadius: 5, padding: 8 },
-  leyendaZona:  { fontSize: 7.5, fontFamily: 'Helvetica-Bold', marginBottom: 2 },
+  leyendaZona:  { fontSize: 7.5, fontFamily: 'Roboto-Bold', marginBottom: 2 },
   leyendaRatio: { fontSize: 7, color: GRIS },
   leyendaDesc:  { fontSize: 6.5, color: GRIS, marginTop: 2 },
 
   // Estadísticas resumen
   statsRow:  { flexDirection: 'row', gap: 8, marginBottom: 14 },
   statCard:  { flex: 1, borderRadius: 6, padding: 8, borderWidth: 0.5, borderColor: BORDE },
-  statNum:   { fontSize: 20, fontFamily: 'Helvetica-Bold' },
+  statNum:   { fontSize: 20, fontFamily: 'Roboto-Bold' },
   statLabel: { fontSize: 6.5, color: GRIS, marginTop: 1 },
 
   // Footer
   footer:     { position: 'absolute', bottom: 18, left: 28, right: 28, flexDirection: 'row', justifyContent: 'space-between', borderTopWidth: 0.5, borderTopColor: BORDE, paddingTop: 5 },
   footerText: { fontSize: 6.5, color: GRIS },
-  footerBold: { fontSize: 6.5, color: GRIS, fontFamily: 'Helvetica-Bold' },
+  footerBold: { fontSize: 6.5, color: GRIS, fontFamily: 'Roboto-Bold' },
 })
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
@@ -185,12 +189,12 @@ export async function GET(_req: NextRequest) {
           const bg    = ZONA_BG[ratio.zona]
           return (
             <View key={j.id} style={[s.row, fi % 2 === 1 ? s.rowPar : {}]}>
-              <View style={s.cNombre}><Text style={{ fontFamily: 'Helvetica-Bold' }}>{j.nombre}</Text></View>
+              <View style={s.cNombre}><Text style={{ fontFamily: 'Roboto-Bold' }}>{j.nombre}</Text></View>
               <View style={s.cNum}><Text style={{ color: GRIS }}>{j.numero ?? '—'}</Text></View>
               <View style={s.cUA}><Text style={{ textAlign: 'center' }}>{ratio.carga_aguda} UA</Text></View>
               <View style={s.cUA}><Text style={{ textAlign: 'center', color: GRIS }}>{ratio.carga_cronica} UA</Text></View>
               <View style={s.cRatio}>
-                <Text style={{ textAlign: 'center', fontFamily: 'Helvetica-Bold', fontSize: 10, color }}>
+                <Text style={{ textAlign: 'center', fontFamily: 'Roboto-Bold', fontSize: 10, color }}>
                   {ratio.ratio}
                 </Text>
               </View>
