@@ -200,7 +200,7 @@ export async function GET(req: NextRequest) {
                   return (
                     <View key={s.id} style={styles.celdaSesion}>
                       <Text style={reg.presente ? styles.presente : styles.ausente}>
-                        {reg.presente ? '✓' : '✗'}
+                        {reg.presente ? 'P' : 'A'}
                       </Text>
                     </View>
                   )

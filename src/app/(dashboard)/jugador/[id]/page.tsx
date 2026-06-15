@@ -78,6 +78,23 @@ export default async function JugadorPage({ params }: { params: Promise<{ id: st
     .map(([semana, v]) => ({ semana, carga_total: v.carga, sesiones: v.sesiones }))
   const ratioAC = calcularRatioAC(semanasParaAC)
 
+  // Wellness de hoy
+  const hoy = new Date().toISOString().split('T')[0]
+  const { data: wellnessHoy } = await supabase
+    .from('wellness').select('sueno, fatiga, dolor, estres, humor')
+    .eq('jugador_id', id).eq('fecha', hoy).maybeSingle()
+
+  const wellnessScore = wellnessHoy
+    ? wellnessHoy.sueno + wellnessHoy.fatiga + wellnessHoy.dolor + wellnessHoy.estres + wellnessHoy.humor
+    : null
+
+  function wellnessInfo(s: number) {
+    if (s >= 20) return { label: 'Excelente', color: 'text-green-600',  dot: 'bg-green-500',  border: 'border-green-200',  bg: 'bg-green-50' }
+    if (s >= 15) return { label: 'Bien',      color: 'text-lime-600',   dot: 'bg-lime-400',   border: 'border-lime-200',   bg: 'bg-lime-50' }
+    if (s >= 10) return { label: 'Regular',   color: 'text-orange-500', dot: 'bg-orange-400', border: 'border-orange-200', bg: 'bg-orange-50' }
+    return              { label: 'Bajo',       color: 'text-red-500',    dot: 'bg-red-500',    border: 'border-red-200',    bg: 'bg-red-50' }
+  }
+
   // Lesión activa
   const { data: lesion } = await supabase
     .from('lesiones')
@@ -147,6 +164,31 @@ export default async function JugadorPage({ params }: { params: Promise<{ id: st
           }`}>{jugador.estado}</span>
         </div>
       </div>
+
+      {/* Wellness card */}
+      {wellnessScore !== null ? (() => {
+        const wi = wellnessInfo(wellnessScore)
+        return (
+          <Link href={`/jugador/${id}/wellness`}
+            className={`flex items-center justify-between ${wi.bg} border ${wi.border} rounded-xl px-4 py-3 transition-colors`}>
+            <div className="flex items-center gap-2">
+              <div className={`w-2 h-2 rounded-full flex-shrink-0 ${wi.dot}`} />
+              <span className="text-sm font-medium text-gray-700">Wellness hoy</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className={`text-sm font-bold ${wi.color}`}>{wellnessScore}/25</span>
+              <span className={`text-xs font-medium ${wi.color}`}>{wi.label}</span>
+              <span className="text-xs text-gray-400">→</span>
+            </div>
+          </Link>
+        )
+      })() : (
+        <Link href={`/jugador/${id}/wellness`}
+          className="flex items-center justify-between bg-white border border-dashed border-gray-300 hover:border-green-400 rounded-xl px-4 py-3 transition-colors group">
+          <span className="text-sm font-medium text-gray-500 group-hover:text-green-700">+ Wellness hoy</span>
+          <span className="text-xs text-gray-400 group-hover:text-green-500">Registrar →</span>
+        </Link>
+      )}
 
       {/* Panel de lesión */}
       <LesionPanel jugadorId={id} lesionActiva={lesion} />
