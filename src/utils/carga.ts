@@ -39,7 +39,7 @@ export function calcularRatioAC(semanas: CargaSemanal[]): RatioAC {
 
   let zona: RatioAC['zona']
   if (ratio < 0.8) zona = 'subestimulacion'
-  else if (ratio <= 1.3) zona = 'segura'
+  else if (ratio < 1.3) zona = 'segura'
   else if (ratio <= 1.5) zona = 'precaucion'
   else zona = 'riesgo'
 

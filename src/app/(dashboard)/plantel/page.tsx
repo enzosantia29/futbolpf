@@ -26,14 +26,14 @@ type KPIs = {
 
 function ratioColor(r: number): string {
   if (r < 0.8)  return 'text-blue-500'
-  if (r <= 1.3) return 'text-green-600'
+  if (r < 1.3)  return 'text-green-600'
   if (r <= 1.5) return 'text-yellow-500'
   return 'text-red-500'
 }
 
 function ratioDot(r: number): string {
   if (r < 0.8)  return 'bg-blue-400'
-  if (r <= 1.3) return 'bg-green-500'
+  if (r < 1.3)  return 'bg-green-500'
   if (r <= 1.5) return 'bg-yellow-400'
   return 'bg-red-500'
 }
