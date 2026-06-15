@@ -71,7 +71,13 @@ export default async function DetalleSesionPage({ params }: { params: Promise<{ 
             })}
           </p>
         </div>
-        <span className={`text-2xl`}>{esPartido ? '⚽' : '🏃'}</span>
+        <div className="flex items-center gap-2">
+          <Link href={`/sesion/${id}/editar`}
+            className="text-xs bg-gray-100 hover:bg-gray-200 text-gray-600 px-3 py-1.5 rounded-xl font-medium transition-colors">
+            Editar
+          </Link>
+          <span className="text-2xl">{esPartido ? '⚽' : '🏃'}</span>
+        </div>
       </div>
 
       {/* Info de la sesión */}
